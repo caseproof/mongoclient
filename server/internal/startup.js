@@ -4,6 +4,7 @@
 Meteor.startup(function () {
     // create a setting if not exist
     var home = process.env.HOME || process.env.USERPROFILE;
+
     home = home.replace(/\\/g, "/");
     if (!Settings.findOne()) {
         Settings.insert({
@@ -17,4 +18,9 @@ Meteor.startup(function () {
             dumpPath: home + "/myDumps/"
         });
     }
+
+    var basicAuth = new HttpBasicAuth(function(username, password) {
+      return process.env.MONGOCLIENT_USERNAME == username & process.env.MONGOCLIENT_PASSWORD == password;
+    });
+    basicAuth.protect();
 });
